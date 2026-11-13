@@ -97,7 +97,11 @@ ol{margin:0;padding-left:1.4em;max-height:200px;overflow:auto}
 <section>
 <h2>名單(一行一位,座號依行數)</h2>
 <textarea id="roster" aria-label="學生名單"></textarea>
-<div class="bar" style="margin-bottom:0"><button id="save">更新名單</button><button id="fill">填入座號 1–30</button></div>
+<div class="bar" style="margin-bottom:0"><button id="save">更新名單</button><label>座號 1–<input type="number" id="seatN" value="30" min="1" max="99" style="width:4.5em;font:inherit;padding:6px;min-height:44px;border:2px solid var(--ink);border-radius:6px;background:var(--card);color:var(--ink)"></label><button id="fill">填入</button></div>
+<h2 style="margin-top:14px">已存名單</h2>
+<div class="bar" style="margin:0 0 8px"><select id="lists" aria-label="已存名單"></select><button id="loadL">載入</button><button id="delL">刪除</button></div>
+<div class="bar" style="margin:0"><input id="listName" placeholder="名單名稱,例如:值日生" style="flex:1 1 140px;font:inherit;padding:8px;min-height:44px;border:2px solid var(--ink);border-radius:6px;background:var(--card);color:var(--ink)"><button id="saveL">存成新名單</button></div>
+<p class="status" id="lmsg"></p>
 </section>
 </div>
 <section style="margin-top:16px">
@@ -231,7 +235,14 @@ $("none").onclick=function(){setSel(function(){return false})};
 $("odd").onclick=function(){setSel(function(s){return s%2===1})};
 $("even").onclick=function(){setSel(function(s){return s%2===0})};
 $("save").onclick=function(){setNames(parse($("roster").value))};
-$("fill").onclick=function(){$("roster").value=seats().join("\n")};
+$("fill").onclick=function(){var n=Math.max(1,Math.min(99,parseInt($("seatN").value,10)||30)),a=[];for(var i=1;i<=n;i++)a.push(String(i));$("roster").value=a.join("\n")};
+function getLists(){try{return JSON.parse(load("l907_lists")||"{}")}catch(e){return {}}}
+function renderLists(sel){var o=getLists(),h="";Object.keys(o).forEach(function(x){h+='<option value="'+esc(x)+'">'+esc(x)+'（'+o[x].length+'人）</option>'});$("lists").innerHTML=h||'<option value="">(尚無已存名單)</option>';if(sel)$("lists").value=sel}
+function lmsg(t){$("lmsg").textContent=t}
+$("saveL").onclick=function(){var nm=$("listName").value.trim(),l=parse($("roster").value);if(!nm){lmsg('請先輸入名單名稱');return}if(!l.length){lmsg('名單是空的');return}var o=getLists();o[nm]=l;store("l907_lists",JSON.stringify(o));setNames(l);renderLists(nm);lmsg('已儲存「'+nm+'」並套用')};
+$("loadL").onclick=function(){var v=$("lists").value,o=getLists();if(!v||!o[v]){lmsg('沒有可載入的名單');return}off={};setNames(o[v]);$("listName").value=v;lmsg('已載入「'+v+'」')};
+$("delL").onclick=function(){var v=$("lists").value,o=getLists();if(!v||!o[v]){lmsg('沒有可刪除的名單');return}delete o[v];store("l907_lists",JSON.stringify(o));renderLists();lmsg('已刪除「'+v+'」')};
+renderLists();
 $("clearlog").onclick=function(){$("log").innerHTML="";store("l907_log","[]")};
 try{JSON.parse(load("l907_off")||"[]").forEach(function(k){off[k]=1})}catch(e){}
 
