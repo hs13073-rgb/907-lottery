@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>907班抽籤</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f2ee;--ink:#1d2433;--sub:#5d6678;--card:#ffffff;--line:#d9d4c8;--red:#b3261e;--onred:#fff;--stick:#e8d7a8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161c2b;--ink:#f1ede3;--sub:#9aa3b8;--card:#1f2740;--line:#33405e;--red:#e0584d;--onred:#161c2b;--stick:#d8c48c}}
+:root[data-theme="dark"]{--bg:#161c2b;--ink:#f1ede3;--sub:#9aa3b8;--card:#1f2740;--line:#33405e;--red:#e0584d;--onred:#161c2b;--stick:#d8c48c}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;line-height:1.6}
+main{max-width:820px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.4rem;margin:0 0 4px;font-weight:900}
+.sub{color:var(--sub);font-size:.9rem;margin:0 0 14px}
+#show{--f:1.1rem}
+.stage{--u:150px;background:var(--card);border:2px solid var(--ink);border-radius:6px;min-height:300px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center;padding:20px 12px}
+.stage.many{--u:100px}
+.stage.grpmode{align-items:flex-start;align-content:flex-start}
+.hint{color:var(--sub)}
+.stick{position:relative;flex:none;width:var(--u);height:calc(var(--u)*1.6);background:var(--stick);color:#2a1d0a;border-radius:4px 4px 30px 30px;box-shadow:inset 0 10px 0 var(--red)}
+.t{position:absolute;left:50%;top:54%;white-space:nowrap;font-weight:900;font-size:calc(var(--u)*.26*var(--s,1));transform:translate(-50%,-50%)}
+
+.stick.rise{animation:rise .45s ease-out}
+.stick.spin .t{opacity:.7}
+@keyframes rise{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.grp{background:var(--bg);border:2px solid var(--ink);border-radius:6px;padding:10px;min-width:110px;animation:rise .45s ease-out}
+.grp h3{margin:0 0 8px;font-size:calc(var(--f)*1.1);color:var(--red)}
+.grp h3 small{color:var(--sub);font-weight:400;margin-left:6px}
+.mem{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;max-width:min(320px,80vw)}
+.m{position:relative;display:inline-block;font-size:var(--f);font-weight:600;padding:2px 8px;border:1px solid var(--line);border-radius:4px;background:var(--card)}
+.m .t{position:static;writing-mode:horizontal-tb;transform:none;font-size:inherit;letter-spacing:0;font-weight:600}
+
+
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+button{font:inherit;cursor:pointer;border-radius:6px;border:2px solid var(--ink);background:var(--card);color:var(--ink);padding:8px 14px;min-height:44px}
+button.go{background:var(--red);color:var(--onred);border-color:var(--red);font-weight:900;font-size:1.15rem;padding:8px 28px;flex:1 1 160px}
+button:disabled{opacity:.5;cursor:not-allowed}
+#exit{display:none}
+button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+label{display:inline-flex;align-items:center;gap:6px}
+select{font:inherit;padding:8px;min-height:44px;border:2px solid var(--ink);border-radius:6px;background:var(--card);color:var(--ink)}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media (max-width:640px){.cols{grid-template-columns:1fr}}
+section{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px}
+h2{font-size:1.05rem;margin:0 0 8px}
+textarea{width:100%;min-height:150px;font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;max-height:200px;overflow:auto;margin-bottom:8px}
+.chips button{min-height:36px;padding:4px 10px;border-width:1px;font-size:.9rem}
+.chips button[aria-pressed="false"]{opacity:.4;text-decoration:line-through}
+.chips button[aria-pressed="true"]{background:var(--stick);color:#2a1d0a;border-color:var(--red)}
+ol{margin:0;padding-left:1.4em;max-height:200px;overflow:auto}
+.status{color:var(--sub);font-size:.9rem;margin:6px 0 0}
+#show.present{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px calc(env(safe-area-inset-bottom,0px) + 12px);--f:min(2.6vw,4.2vh)}
+.present .stage{flex:1;--u:min(21vw,32vh);overflow:auto}
+.present .stage.many{--u:min(12vw,22vh)}
+.present #exit{display:inline-block}
+.present #fs{display:none}
+@media (prefers-reduced-motion:reduce){.stick.rise,.grp{animation:none}}
+</style>
+</head>
+<body>
+<main>
+<h1>907班抽籤</h1>
+<p class="sub">抽人、分組、選擇參與同學、單雙號、投影全螢幕,都在這裡。</p>
+
+<div id="show" class="tilt">
+<div class="stage" id="stage" aria-live="polite"><p class="hint">籤筒準備好了</p></div>
+<div class="bar">
+<button class="go" id="go">抽籤</button>
+<button id="fs">投影全螢幕</button>
+<button id="exit">離開全螢幕</button>
+</div>
+</div>
+
+<div class="bar tabs">
+<button id="mPick" aria-pressed="true">抽人</button>
+<button id="mGrp" aria-pressed="false">分組</button>
+<label id="lN">一次抽 <select id="n"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select> 位</label>
+<label id="lG" hidden>分成 <select id="g"><option>2</option><option>3</option><option>4</option><option selected>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select> 組</label>
+<label id="lR"><input type="checkbox" id="norep" checked> 不重複抽到</label>
+
+<button id="reset">重新放回籤筒</button>
+</div>
+<p class="status" id="status"></p>
+
+<div class="cols">
+<section>
+<h2>誰放進籤筒(點名字可移出/放入)</h2>
+<div class="chips" id="chips"></div>
+<div class="bar" style="margin:0"><button id="all">全選</button><button id="none">全不選</button><button id="odd">只選單號</button><button id="even">只選雙號</button></div>
+</section>
+<section>
+<h2>名單(一行一位,座號依行數)</h2>
+<textarea id="roster" aria-label="學生名單"></textarea>
+<div class="bar" style="margin-bottom:0"><button id="save">更新名單</button><button id="fill">填入座號 1–30</button></div>
+</section>
+</div>
+<section style="margin-top:16px">
+<h2>抽籤紀錄</h2>
+<ol id="log"></ol>
+<div class="bar" style="margin-bottom:0"><button id="clearlog">清除紀錄</button></div>
+</section>
+</main>
+
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var names=[],off={},drawn={},mode="pick",busy=false;
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function rnd(n){var a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function disp(n){return n.replace(/^(\d+)號$/,"$1")}
+function parse(t){var s={},o=[];t.split(/\r?\n/).forEach(function(x){x=x.trim();if(x&&!s[x]){s[x]=1;o.push(x)}});return o}
+function seats(){var a=[];for(var i=1;i<=30;i++)a.push(String(i));return a}
+function inc(){return names.filter(function(n){return !off[n]})}
+function pool(){return inc().filter(function(n){return !drawn[n]})}
+function saveOff(){store("l907_off",JSON.stringify(Object.keys(off)))}
+function status(){
+var s="參與 "+inc().length+" / "+names.length+" 位";
+if(mode==="pick"&&$("norep").checked)s+="；籤筒剩餘 "+pool().length+" 位";
+$("status").textContent=s;
+}
+function chips(){
+var h="";
+names.forEach(function(n,i){h+='<button data-n="'+esc(n)+'" aria-pressed="'+(!off[n])+'" title="座號 '+(i+1)+'">'+esc(n)+'</button>'});
+$("chips").innerHTML=h;status();
+}
+function setNames(list){
+names=list;drawn={};
+var o={};Object.keys(off).forEach(function(k){if(list.indexOf(k)>=0)o[k]=1});off=o;
+$("roster").value=list.join("\n");
+store("l907_names",list.join("\n"));saveOff();chips();
+}
+function setSel(fn){off={};names.forEach(function(n,i){if(!fn(i+1))off[n]=1});saveOff();chips()}
+function stick(t,cls){
+t=disp(t);var s=Math.min(1.3,3.4/t.length);
+return '<div class="stick '+cls+'"><span class="t" style="--s:'+s+'">'+esc(t)+'</span></div>';
+}
+function setMany(m){$("stage").classList.toggle("many",m)}
+function setMode(m){
+mode=m;
+$("mPick").setAttribute("aria-pressed",m==="pick");$("mGrp").setAttribute("aria-pressed",m==="grp");
+$("lN").hidden=$("lR").hidden=(m!=="pick");$("lG").hidden=(m!=="grp");
+$("go").textContent=m==="pick"?"抽籤":"分組";
+$("stage").classList.remove("grpmode");
+$("stage").innerHTML='<p class="hint">'+(m==="pick"?"籤筒準備好了":"按「分組」開始")+'</p>';
+status();
+}
+function msg(t){$("stage").classList.remove("grpmode","many");$("stage").innerHTML='<p class="hint">'+t+'</p>'}
+function draw(){
+if(busy)return;
+if(!inc().length){msg("籤筒是空的,請先選擇參與同學");return}
+mode==="pick"?pick():group();
+}
+function pick(){
+var norep=$("norep").checked,n=+$("n").value;
+var src=norep?pool():inc();
+if(!src.length){msg("籤筒空了,請按「重新放回籤筒」");return}
+n=Math.min(n,src.length);
+busy=true;$("go").disabled=true;setMany(n>1);$("stage").classList.remove("grpmode");
+var all=inc(),t=0,tick=setInterval(function(){
+var h="";for(var i=0;i<n;i++)h+=stick(all[rnd(all.length)],"spin");
+$("stage").innerHTML=h;t+=80;
+if(t>=1200){clearInterval(tick);finish(src,n,norep)}
+},80);
+}
+function finish(src,n,norep){
+var tmp=src.slice(),res=[],h="";
+for(var i=0;i<n;i++)res.push(tmp.splice(rnd(tmp.length),1)[0]);
+if(norep)res.forEach(function(r){drawn[r]=1});
+res.forEach(function(r){h+=stick(r,"rise")});
+$("stage").innerHTML=h;
+log(res.map(disp).join("、"));
+status();busy=false;$("go").disabled=false;
+}
+function group(){
+var k=Math.min(+$("g").value,inc().length),a=inc().slice(),i,j,tmp;
+for(i=a.length-1;i>0;i--){j=rnd(i+1);tmp=a[i];a[i]=a[j];a[j]=tmp}
+var gs=[];for(i=0;i<k;i++)gs.push([]);
+a.forEach(function(x,idx){gs[idx%k].push(x)});
+var h="";
+gs.forEach(function(g,idx){
+h+='<div class="grp"><h3>第'+(idx+1)+'組<small>'+g.length+'人</small></h3><div class="mem">';
+g.forEach(function(m){h+='<div class="m" style="--len:'+m.length+'"><span class="t">'+esc(disp(m))+'</span></div>'});
+h+='</div></div>';
+});
+$("stage").classList.remove("many");$("stage").classList.add("grpmode");
+$("stage").innerHTML=h;
+log("分成 "+k+" 組："+gs.map(function(g,i){return (i+1)+"."+g.map(disp).join("、")}).join("；"));
+}
+function log(t){
+var li=document.createElement("li");li.textContent=t;
+$("log").insertBefore(li,$("log").firstChild);
+store("l907_log",JSON.stringify(Array.prototype.map.call($("log").children,function(e){return e.textContent}).slice(0,60)));
+}
+function enter(){
+$("show").classList.add("present");
+try{var p=document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();if(p&&p.catch)p.catch(function(){})}catch(e){}
+}
+function leave(){
+$("show").classList.remove("present");
+try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}
+}
+$("go").onclick=draw;
+$("fs").onclick=enter;$("exit").onclick=leave;
+document.addEventListener("fullscreenchange",function(){if(!document.fullscreenElement)$("show").classList.remove("present")});
+document.addEventListener("keydown",function(e){
+var tg=e.target.tagName;
+if((e.key===" "||e.key==="Enter")&&tg!=="TEXTAREA"&&tg!=="BUTTON"&&tg!=="SELECT"&&tg!=="INPUT"){e.preventDefault();draw()}
+if(e.key==="Escape")leave();
+});
+$("mPick").onclick=function(){setMode("pick")};
+$("mGrp").onclick=function(){setMode("grp")};
+$("norep").onchange=status;
+
+$("reset").onclick=function(){drawn={};status();if(mode==="pick")msg("已全部放回籤筒")};
+$("chips").onclick=function(e){
+var b=e.target.closest("button");if(!b)return;
+var n=b.getAttribute("data-n");
+if(off[n])delete off[n];else off[n]=1;
+saveOff();b.setAttribute("aria-pressed",!off[n]);status();
+};
+$("all").onclick=function(){setSel(function(){return true})};
+$("none").onclick=function(){setSel(function(){return false})};
+$("odd").onclick=function(){setSel(function(s){return s%2===1})};
+$("even").onclick=function(){setSel(function(s){return s%2===0})};
+$("save").onclick=function(){setNames(parse($("roster").value))};
+$("fill").onclick=function(){$("roster").value=seats().join("\n")};
+$("clearlog").onclick=function(){$("log").innerHTML="";store("l907_log","[]")};
+try{JSON.parse(load("l907_off")||"[]").forEach(function(k){off[k]=1})}catch(e){}
+
+var saved=load("l907_names");
+setNames(saved?parse(saved):seats());
+try{JSON.parse(load("l907_log")||"[]").forEach(function(x){var li=document.createElement("li");li.textContent=x;$("log").appendChild(li)})}catch(e){}
+})();
+</script>
+</body>
+</html>
